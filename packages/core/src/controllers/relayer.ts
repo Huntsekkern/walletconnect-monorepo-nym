@@ -9,7 +9,7 @@ import {
   JsonRpcRequest,
   RequestArguments,
 } from "@walletconnect/jsonrpc-utils";
-import NymWsConnection from "nym-ws-connection";
+import { NymWsConnection } from "nym-ws-connection";
 import {
   generateChildLogger,
   getDefaultLoggerOptions,
