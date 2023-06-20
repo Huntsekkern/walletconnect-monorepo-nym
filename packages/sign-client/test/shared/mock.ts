@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import JsonRpcProvider from "@walletconnect/jsonrpc-provider";
-import NymWsConnection from "@walletconnect/nym-ws-connection";
+import NymWsConnection from "nym-ws-connection";
 import { IEvents } from "@walletconnect/events";
 import {
   IJsonRpcProvider,
