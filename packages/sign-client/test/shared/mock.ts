@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import JsonRpcProvider from "@walletconnect/jsonrpc-provider";
-import WsConnection from "@walletconnect/jsonrpc-ws-connection";
+import NymWsConnection from "@walletconnect/nym-ws-connection";
 import { IEvents } from "@walletconnect/events";
 import {
   IJsonRpcProvider,
@@ -30,7 +30,7 @@ export class MockWakuRelayer implements IEvents {
   public provider: IJsonRpcProvider;
 
   constructor(rpcUrl: string) {
-    this.provider = new JsonRpcProvider(new WsConnection(rpcUrl));
+    this.provider = new JsonRpcProvider(new NymWsConnection(rpcUrl));
     this.registerEventListeners();
   }
 

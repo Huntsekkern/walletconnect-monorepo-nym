@@ -9,7 +9,7 @@ import {
   JsonRpcRequest,
   RequestArguments,
 } from "@walletconnect/jsonrpc-utils";
-import WsConnection from "@walletconnect/jsonrpc-ws-connection";
+import NymWsConnection from "@walletconnect/nym-ws-connection";
 import {
   generateChildLogger,
   getDefaultLoggerOptions,
@@ -272,7 +272,7 @@ export class Relayer extends IRelayer {
   private async createProvider() {
     const auth = await this.core.crypto.signJWT(this.relayUrl);
     this.provider = new JsonRpcProvider(
-      new WsConnection(
+      new NymWsConnection(
         formatRelayRpcUrl({
           sdkVersion: RELAYER_SDK_VERSION,
           protocol: this.protocol,
