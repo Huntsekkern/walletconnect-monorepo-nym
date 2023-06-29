@@ -1,4 +1,4 @@
-import HttpConnection from "@walletconnect/jsonrpc-http-connection";
+import { NymWsConnection } from "nym-ws-connection";
 import { JsonRpcProvider } from "@walletconnect/jsonrpc-provider";
 import Client from "@walletconnect/sign-client";
 import { EngineTypes, SessionTypes } from "@walletconnect/types";
@@ -119,7 +119,7 @@ class CosmosProvider implements IProvider {
   ): JsonRpcProvider | undefined {
     const rpc = rpcUrl || getRpcUrl(chainId, this.namespace, this.client.core.projectId);
     if (typeof rpc === "undefined") return undefined;
-    const http = new JsonRpcProvider(new HttpConnection(rpc, getGlobal("disableProviderPing")));
+    const http = new JsonRpcProvider(new NymWsConnection(rpc, getGlobal("disableProviderPing")));
     return http;
   }
 }
