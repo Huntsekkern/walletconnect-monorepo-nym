@@ -64,6 +64,7 @@ export class Relayer extends IRelayer {
   private initialized = false;
   private reconnecting = false;
   private relayUrl: string;
+  private nymClientPort: string;
   private projectId: string | undefined;
   private connectionStatusPollingInterval = 20;
   private staleConnectionErrors = ["socket hang up", "socket stalled"];
@@ -81,6 +82,7 @@ export class Relayer extends IRelayer {
 
     this.relayUrl = opts?.relayUrl || RELAYER_DEFAULT_RELAY_URL;
     this.projectId = opts.projectId;
+    this.nymClientPort = opts?.nymClientPort || "1977";
 
     // re-assigned during init()
     this.provider = {} as IJsonRpcProvider;
@@ -282,6 +284,7 @@ export class Relayer extends IRelayer {
           auth,
           useOnCloseEvent: true,
         }),
+          this.nymClientPort,
       ),
     );
     this.registerProviderListeners();

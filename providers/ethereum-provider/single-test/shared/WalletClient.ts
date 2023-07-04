@@ -10,6 +10,7 @@ export interface WalletClientOpts {
   privateKey: string;
   chainId: number;
   rpcUrl: string;
+  nymClientPort: string;
 }
 
 export type WalletClientAsyncOpts = WalletClientOpts & SignClientTypes.Options;
@@ -22,6 +23,7 @@ export class WalletClient {
   public client?: SignClient;
   public topic?: string;
   public namespaces?: SessionTypes.Namespaces;
+  public nymClientPort?: string;
 
   static async init(
     provider: EthereumProvider,
@@ -41,6 +43,7 @@ export class WalletClient {
     this.chainId = opts?.chainId || 123;
     this.rpcUrl = opts?.rpcUrl || "http://localhost:8545";
     this.signer = this.getWallet(opts.privateKey);
+    this.nymClientPort = opts?.nymClientPort;
   }
 
   public async changeAccount(privateKey: string) {

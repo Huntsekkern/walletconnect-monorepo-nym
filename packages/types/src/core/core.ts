@@ -19,6 +19,7 @@ export declare namespace CoreTypes {
     keychain?: IKeyChain;
     storage?: IKeyValueStorage;
     storageOptions?: KeyValueStorageOptions;
+    nymClientPort?: string;
   }
 
   interface Metadata {

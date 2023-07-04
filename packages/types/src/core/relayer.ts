@@ -59,6 +59,7 @@ export interface RelayerOptions {
   logger?: string | Logger;
   relayUrl?: string;
   projectId?: string;
+  nymClientPort?: string;
 }
 
 export interface RelayerClientMetadata {

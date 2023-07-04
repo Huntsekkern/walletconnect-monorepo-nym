@@ -17,6 +17,8 @@ export class SignClient extends ISignClient {
   public readonly name: ISignClient["name"] = SIGN_CLIENT_DEFAULT.name;
   public readonly metadata: ISignClient["metadata"];
 
+  public nymClientPort?: string;
+
   public core: ISignClient["core"];
   public logger: ISignClient["logger"];
   public events: ISignClient["events"] = new EventEmitter();
@@ -37,6 +39,8 @@ export class SignClient extends ISignClient {
 
     this.name = opts?.name || SIGN_CLIENT_DEFAULT.name;
     this.metadata = opts?.metadata || getAppMetadata();
+
+    this.nymClientPort = opts?.nymClientPort || "1977";
 
     const logger =
       typeof opts?.logger !== "undefined" && typeof opts?.logger !== "string"
