@@ -42,6 +42,7 @@ export class UniversalProvider implements IUniversalProvider {
   public providerOpts: UniversalProviderOpts;
   public logger: Logger;
   public uri: string | undefined;
+  public nymClientPort?: string;
 
   private shouldAbortPairingAttempt = false;
   private maxPairingAttempts = 10;
@@ -60,6 +61,7 @@ export class UniversalProvider implements IUniversalProvider {
         ? opts.logger
         : pino(getDefaultLoggerOptions({ level: opts?.logger || LOGGER }));
     this.disableProviderPing = opts?.disableProviderPing || false;
+    this.nymClientPort = opts?.nymClientPort || "1977";
   }
 
   public async request<T = unknown>(
@@ -247,6 +249,7 @@ export class UniversalProvider implements IUniversalProvider {
         metadata: this.providerOpts.metadata, // fetch metadata automatically if not provided?
         storageOptions: this.providerOpts.storageOptions,
         name: this.providerOpts.name,
+        nymClientPort: this.nymClientPort,
       }));
 
     this.logger.trace(`SignClient Initialized`);

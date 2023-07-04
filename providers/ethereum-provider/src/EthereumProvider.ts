@@ -202,6 +202,7 @@ export interface EthereumProviderOptions {
   showQrModal: boolean;
   qrModalOptions?: QrModalOptions;
   disableProviderPing?: boolean;
+  nymClientPort?: string;
 }
 
 export class EthereumProvider implements IEthereumProvider {
@@ -211,6 +212,7 @@ export class EthereumProvider implements IEthereumProvider {
   public signer: InstanceType<typeof UniversalProvider>;
   public chainId = 1;
   public modal?: WalletConnectModal;
+  public nymClientPort?: string;
 
   protected rpc: EthereumRpcConfig;
   protected readonly STORAGE_KEY = STORAGE_KEY;
@@ -478,6 +480,7 @@ export class EthereumProvider implements IEthereumProvider {
   protected async initialize(opts: EthereumProviderOptions) {
     this.rpc = this.getRpcConfig(opts);
     this.chainId = getEthereumChainId(this.rpc.chains);
+    this.nymClientPort = opts?.nymClientPort;
     this.signer = await UniversalProvider.init({
       projectId: this.rpc.projectId,
       metadata: this.rpc.metadata,

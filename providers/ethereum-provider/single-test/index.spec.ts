@@ -35,10 +35,12 @@ describe("EthereumProvider", function () {
       port: PORT,
       genesisAccounts: [ACCOUNTS.a, ACCOUNTS.b],
     });
+    console.log("Create PROVIDER");
     provider = await EthereumProvider.init({
       projectId: process.env.TEST_PROJECT_ID || "",
       chains: [1],
       methods: TEST_ETHEREUM_METHODS_REQUIRED,
+      nymClientPort: "1977",
       optionalMethods: TEST_ETHEREUM_METHODS_OPTIONAL,
       showQrModal: true,
       qrModalOptions: {
@@ -49,7 +51,9 @@ describe("EthereumProvider", function () {
       },
       disableProviderPing: true,
     });
+    console.log("Create CLIENT");
     walletClient = await WalletClient.init(provider, TEST_WALLET_CLIENT_OPTS);
+    console.log("Connect PROVIDER");
     await provider.connect({
       optionalChains: [42, CHAIN_ID],
       rpcMap: {

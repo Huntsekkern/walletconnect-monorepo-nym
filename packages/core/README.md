@@ -18,3 +18,7 @@ This test is relatively global. Now before running this test, it is important to
 3) Build walletconnect-utils-nym (npm run build)
 4) Run and connect the service provider to one of the nym-client `node walletconnect-utils-nym/jsonrpc/nym-run-SP/dist/src/run-nym-wc-SP.js`
 5) `npm link` in walletconnect-utils-nym and `npm link nym-ws-connection`in this repo.
+
+For the singletest of EthereumProvider (yes, it's another package, but their readme is already busy)
+Similar, but run one more nym-client for the user (port 1970), so that the walletClient also can connect to a nym Client
+Also, to test, but it might be needed to run more npm link to create local updated versions of local packages, as this monorepo imports internal packages.

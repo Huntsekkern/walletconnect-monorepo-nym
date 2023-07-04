@@ -13,6 +13,7 @@ export interface UniversalProviderOpts {
   storageOptions?: KeyValueStorageOptions;
   name?: string;
   disableProviderPing?: boolean;
+  nymClientPort?: string;
 }
 
 export type Metadata = SignClientTypes.Metadata;
