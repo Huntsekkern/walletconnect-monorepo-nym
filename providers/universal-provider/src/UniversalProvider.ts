@@ -120,12 +120,15 @@ export class UniversalProvider implements IUniversalProvider {
   }
 
   public async connect(opts: ConnectParams): Promise<SessionTypes.Struct | undefined> {
+    console.log("UNIVERSALPROVIDER CONNECT");
     if (!this.client) {
       throw new Error("Sign Client not initialized");
     }
     this.setNamespaces(opts);
     await this.cleanupPendingPairings();
     if (opts.skipPairing) return;
+
+    console.log("UNIVERSALPROVIDER CONNECTING");
 
     return await this.pair(opts.pairingTopic);
   }
@@ -151,9 +154,14 @@ export class UniversalProvider implements IUniversalProvider {
   }
 
   public async pair(pairingTopic: string | undefined): Promise<SessionTypes.Struct> {
+    console.log("UNIVERSALPROVIDER PAIRING");
+
     this.shouldAbortPairingAttempt = false;
     let pairingAttempts = 0;
     do {
+      console.log("UNIVERSALPROVIDER IN LOOP");
+      console.log("pairingAttemps = " + pairingAttempts);
+
       if (this.shouldAbortPairingAttempt) {
         throw new Error("Pairing aborted");
       }
@@ -161,6 +169,8 @@ export class UniversalProvider implements IUniversalProvider {
       if (pairingAttempts >= this.maxPairingAttempts) {
         throw new Error("Max auto pairing attempts reached");
       }
+
+      console.log("UNIVERSALPROVIDER AWAIT CLIENT CONNECT");
 
       const { uri, approval } = await this.client.connect({
         pairingTopic,
@@ -170,22 +180,34 @@ export class UniversalProvider implements IUniversalProvider {
         nymClientPort: this.nymClientPort,
       });
 
+      console.log("UNIVERSALPROVIDER CLIENT CONNECTED");
+
       if (uri) {
         this.uri = uri;
         this.events.emit("display_uri", uri);
       }
 
+      console.log("UNIVERSALPROVIDER APPROVAL");
+      console.log(approval);
+
       await approval()
         .then((session) => {
+          console.log("IN THEN CLAUSE");
+          console.log(session);
           this.session = session;
         })
         .catch((error) => {
+          console.log("approval has error");
+          console.log(error);
           if (error.message !== PROPOSAL_EXPIRY_MESSAGE) {
             throw error;
           }
           pairingAttempts++;
         });
+      console.log("LOOPING AGAIN");
     } while (!this.session);
+    console.log("UNIVERSALPROVIDER ONCONNECT");
+
     this.onConnect();
     return this.session;
   }
@@ -241,6 +263,7 @@ export class UniversalProvider implements IUniversalProvider {
   }
 
   private async createClient() {
+    console.log("BEFORE UP CREATECLIENT");
     this.client =
       this.providerOpts.client ||
       (await SignClient.init({

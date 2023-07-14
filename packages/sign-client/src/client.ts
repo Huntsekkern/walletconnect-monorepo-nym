@@ -28,6 +28,7 @@ export class SignClient extends ISignClient {
   public pendingRequest: ISignClient["pendingRequest"];
 
   static async init(opts?: SignClientTypes.Options) {
+    console.log("BEFORE new sign CLIENT");
     const client = new SignClient(opts);
     await client.initialize();
 
@@ -89,8 +90,12 @@ export class SignClient extends ISignClient {
 
   public connect: ISignClient["connect"] = async (params) => {
     try {
+      console.log("SIGNCLIENT CONNECT");
+      console.log(params.nymClientPort);
+      console.log(this.engine);
       return await this.engine.connect(params);
     } catch (error: any) {
+      console.log("SIGNCLIENT CONNECT ERROR");
       this.logger.error(error.message);
       throw error;
     }

@@ -80,6 +80,7 @@ export class Engine extends IEngine {
   private ignoredPayloadTypes = [TYPE_1];
 
   constructor(client: IEngine["client"]) {
+    console.log("NEW ENGINE");
     super(client);
   }
 
@@ -96,6 +97,7 @@ export class Engine extends IEngine {
   // ---------- Public ------------------------------------------------ //
 
   public connect: IEngine["connect"] = async (params) => {
+    console.log("SIGNCLIENT ENGINE CONNECT");
     this.isInitialized();
     const connectParams = {
       ...params,
@@ -132,16 +134,20 @@ export class Engine extends IEngine {
       },
       ...(sessionProperties && { sessionProperties }),
     };
+    console.log("SIGNCLIENT ENGINE CONNECT after checks");
     const {
       reject,
       resolve,
       done: approval,
     } = createDelayedPromise<SessionTypes.Struct>(FIVE_MINUTES, PROPOSAL_EXPIRY_MESSAGE);
+    console.log("SIGNCLIENT ENGINE CONNECT after create delayed promise");
+
     this.events.once<"session_connect">(
       engineEvent("session_connect"),
       async ({ error, session }) => {
         if (error) reject(error);
         else if (session) {
+          console.log("engineEvent: session_connect");
           session.self.publicKey = publicKey;
           const completeSession = {
             ...session,
@@ -170,6 +176,9 @@ export class Engine extends IEngine {
 
     const expiry = calcExpiry(FIVE_MINUTES);
     await this.setProposal(id, { id, expiry, ...proposal });
+    console.log("SIGNCLIENT ENGINE CONNECT returned");
+    console.log(uri + " : " + approval);
+
     return { uri, approval };
   };
 
@@ -470,6 +479,7 @@ export class Engine extends IEngine {
   };
 
   private sendRequest: EnginePrivate["sendRequest"] = async (topic, method, params, expiry, id) => {
+    console.log("SENDREQUEST: " + method);
     const payload = formatJsonRpcRequest(method, params);
     if (isBrowser() && METHODS_TO_VERIFY.includes(method)) {
       const hash = hashMessage(JSON.stringify(payload));
@@ -672,6 +682,7 @@ export class Engine extends IEngine {
       });
       await this.client.core.pairing.activate({ topic });
     } else if (isJsonRpcError(payload)) {
+      console.log("RECEIVED AN ERROR TO SESSION_CONNECT");
       await this.client.proposal.delete(id, getSdkError("USER_DISCONNECTED"));
       this.events.emit(engineEvent("session_connect"), { error: payload.error });
     }
@@ -682,6 +693,7 @@ export class Engine extends IEngine {
     payload,
   ) => {
     const { id, params } = payload;
+    console.log("SESSION_CONNECT MIGHT BE SUCCESSFUL");
     try {
       this.isValidSessionSettleRequest(params);
       const {

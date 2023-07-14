@@ -25,6 +25,7 @@ class Eip155Provider implements IProvider {
   public events: EventEmitter;
 
   constructor(opts: SubProviderOpts) {
+    console.log("EIP BEING CREATED");
     this.namespace = opts.namespace;
     this.events = getGlobal("events");
     this.client = getGlobal("client");

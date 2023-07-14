@@ -267,6 +267,7 @@ export class EthereumProvider implements IEthereumProvider {
       const session = await new Promise<SessionTypes.Struct | undefined>(
         async (resolve, reject) => {
           if (this.rpc.showQrModal) {
+            console.log("SHOWQRMODAL");
             this.modal?.subscribeModal((state) => {
               // the modal was closed so reject the promise
               if (!state.open && !this.signer.session) {
@@ -275,6 +276,9 @@ export class EthereumProvider implements IEthereumProvider {
               }
             });
           }
+          console.log("SIGNER CONNECT");
+          console.log(this);
+          console.log(this.signer);
           await this.signer
             .connect({
               namespaces: {
@@ -288,9 +292,11 @@ export class EthereumProvider implements IEthereumProvider {
               pairingTopic: opts?.pairingTopic,
             })
             .then((session) => {
+              console.log("THEN");
               resolve(session);
             })
             .catch((error: Error) => {
+              console.log("CATCH");
               reject(new Error(error.message));
             });
         },
