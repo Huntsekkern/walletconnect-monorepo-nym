@@ -39,7 +39,8 @@
     "test:run": "vitest run --dir test",
     "test": "npm run test:pre; npm run test:run",
     "test:ignoreUnhandled": "npm run test:pre; npm run test:run -- --dangerouslyIgnoreUnhandledErrors",
-    "singletest": "vitest run --dir single-test",
+    "singletest:pre": "rm -rf ./single-test/tmp && mkdir ./single-test/tmp",
+    "singletest": "npm run singletest:pre; vitest run --dir single-test",
     "lint": "eslint -c '../../.eslintrc' --fix './src/**/*.ts'",
     "prettier": "prettier --check '{src,test}/**/*.{js,ts,jsx,tsx}'"
   },

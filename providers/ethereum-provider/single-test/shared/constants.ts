@@ -60,7 +60,7 @@ export const TEST_WALLET_CLIENT_OPTS = {
   relayUrl: TEST_RELAY_URL,
   projectId: process.env.TEST_PROJECT_ID,
   metadata: TEST_WALLET_METADATA,
-  nymClientPort: "1970"
+  nymClientPort: "1970",
 };
 
 export const TEST_ETH_TRANSFER = {

@@ -56,6 +56,7 @@ export declare namespace EngineTypes {
     sessionProperties?: ProposalTypes.SessionProperties;
     pairingTopic?: string;
     relays?: RelayerTypes.ProtocolOptions[];
+    nymClientPort?: string;
   }
 
   interface PairParams {
