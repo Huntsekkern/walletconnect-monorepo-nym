@@ -40,6 +40,7 @@ import {
   RELAYER_RECONNECT_TIMEOUT,
   RELAYER_SUBSCRIBER_SUFFIX,
   RELAYER_DEFAULT_RELAY_URL,
+  RELAYER_FAILOVER_RELAY_URL,
   SUBSCRIBER_EVENTS,
   RELAYER_TRANSPORT_CUTOFF,
 } from "../constants";
@@ -90,12 +91,20 @@ export class Relayer extends IRelayer {
   public async init() {
     this.logger.trace(`Initialized`);
     await this.createProvider();
-    await Promise.all([this.messages.init(), this.transportOpen(), this.subscriber.init()]);
+    await Promise.all([this.messages.init(), this.subscriber.init()]);
+    try {
+      await this.transportOpen();
+    } catch {
+      this.logger.warn(
+        `Connection via ${this.relayUrl} failed, attempting to connect via failover domain ${RELAYER_FAILOVER_RELAY_URL}...`,
+      );
+      await this.restartTransport(RELAYER_FAILOVER_RELAY_URL);
+    }
     this.registerEventListeners();
     this.initialized = true;
     setTimeout(async () => {
       if (this.subscriber.topics.length === 0) {
-        this.logger.info(`No topics subscribted to after init, closing transport`);
+        this.logger.info(`No topics subscribed to after init, closing transport`);
         await this.transportClose();
         this.transportExplicitlyClosed = false;
       }
@@ -206,7 +215,11 @@ export class Relayer extends IRelayer {
         }),
         await Promise.race([
           new Promise<void>(async (resolve, reject) => {
-            await createExpiringPromise(this.provider.connect(), 5_000, "socket stalled")
+            await createExpiringPromise(
+              this.provider.connect(),
+              5_000,
+              `Socket stalled when trying to connect to ${this.relayUrl}`,
+            )
               .catch((e) => reject(e))
               .then(() => resolve())
               .finally(() =>
@@ -256,7 +269,7 @@ export class Relayer extends IRelayer {
   }
 
   private rejectTransportOpen() {
-    throw new Error("closeTransport called before connection was established");
+    throw new Error("Attempt to connect to relay via `transportOpen` has stalled. Retrying...");
   }
 
   private async createProvider() {
