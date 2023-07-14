@@ -62,9 +62,11 @@ describe("EthereumProvider", function () {
     });
     walletAddress = walletClient.signer.address;
     receiverAddress = ACCOUNTS.b.address;
+    console.log("PROVIDER Connected");
   });
 
   afterAll(async () => {
+    console.log("AFTER ALL");
     // close test network
     await testNetwork.close();
     await provider.signer.client.core.relayer.transportClose();
@@ -75,8 +77,11 @@ describe("EthereumProvider", function () {
     describe("Web3", () => {
       let web3: Web3;
       beforeAll(() => {
+        console.log("Create WEB3");
         web3 = new Web3(provider);
+        console.log("WEB3 created");
       });
+/*
       it("ERC20 contract", async () => {
         const erc20Factory = new web3.eth.Contract(JSON.parse(JSON.stringify(_abi)));
         const erc20 = await erc20Factory
@@ -99,61 +104,64 @@ describe("EthereumProvider", function () {
         const tokenBalanceB = await erc20.methods.balanceOf(receiverAddress).call();
         expect(tokenBalanceB).to.eql(utils.parseEther("1").toString());
       });
-/*      it("estimate gas", async () => {
+*/
+      it("estimate gas", async () => {
+        console.log("ESTIMATING GAS");
         const ethTransferGas = await web3.eth.estimateGas(TEST_ETH_TRANSFER);
+        console.log("GAS ESTIMATED");
         expect(ethTransferGas.toString()).to.eql("21001");
       });
-      it("send transaction", async () => {
-        const balanceBefore = BigNumber.from(await web3.eth.getBalance(walletAddress));
-        await web3.eth.sendTransaction(TEST_ETH_TRANSFER);
-        const balanceAfter = BigNumber.from(await web3.eth.getBalance(walletAddress));
-        expect(
-          balanceAfter.lt(balanceBefore),
-          "balanceAfter " +
-            balanceAfter.toString() +
-            " less than balanceBefore: " +
-            balanceBefore.toString(),
-        ).to.be.true;
-      });
-      it("sign transaction", async () => {
-        const balanceBefore = BigNumber.from(await web3.eth.getBalance(walletAddress));
-        const { rawTransaction } = await web3.eth.accounts.signTransaction(
-          TEST_SIGN_TRANSACTION,
-          walletClient.signer.privateKey,
-        );
-        const broadcastTx = await provider.request({
-          method: "eth_sendRawTransaction",
-          params: [rawTransaction],
-        });
-        expect(!!broadcastTx).to.be.true;
-        const balanceAfter = BigNumber.from(await web3.eth.getBalance(walletAddress));
-        expect(balanceAfter.lt(balanceBefore)).to.be.true;
-      });
-      it("sign message", async () => {
-        const msg = "Hello world";
-        const signature = await web3.eth.sign(msg, walletAddress);
-        const verify = utils.verifyMessage(msg, signature);
-        expect(verify).eq(walletAddress);
-      });
-      it("sign transaction and send via sendAsync", async () => {
-        const balanceBefore = BigNumber.from(await web3.eth.getBalance(walletAddress));
-        const { rawTransaction } = await web3.eth.accounts.signTransaction(
-          TEST_SIGN_TRANSACTION,
-          walletClient.signer.privateKey,
-        );
-        const callback = async (_error: any, result: any) => {
-          expect(!!result).to.be.true;
-          const balanceAfter = BigNumber.from(await web3.eth.getBalance(walletAddress));
-          expect(balanceAfter.lt(balanceBefore)).to.be.true;
-        };
-        provider.sendAsync(
-          {
-            method: "eth_sendRawTransaction",
-            params: [rawTransaction],
-          },
-          callback,
-        );
-      });*/
+      /*    it("send transaction", async () => {
+            const balanceBefore = BigNumber.from(await web3.eth.getBalance(walletAddress));
+            await web3.eth.sendTransaction(TEST_ETH_TRANSFER);
+            const balanceAfter = BigNumber.from(await web3.eth.getBalance(walletAddress));
+            expect(
+              balanceAfter.lt(balanceBefore),
+              "balanceAfter " +
+                balanceAfter.toString() +
+                " less than balanceBefore: " +
+                balanceBefore.toString(),
+            ).to.be.true;
+          });
+          it("sign transaction", async () => {
+            const balanceBefore = BigNumber.from(await web3.eth.getBalance(walletAddress));
+            const { rawTransaction } = await web3.eth.accounts.signTransaction(
+              TEST_SIGN_TRANSACTION,
+              walletClient.signer.privateKey,
+            );
+            const broadcastTx = await provider.request({
+              method: "eth_sendRawTransaction",
+              params: [rawTransaction],
+            });
+            expect(!!broadcastTx).to.be.true;
+            const balanceAfter = BigNumber.from(await web3.eth.getBalance(walletAddress));
+            expect(balanceAfter.lt(balanceBefore)).to.be.true;
+          });
+          it("sign message", async () => {
+            const msg = "Hello world";
+            const signature = await web3.eth.sign(msg, walletAddress);
+            const verify = utils.verifyMessage(msg, signature);
+            expect(verify).eq(walletAddress);
+          });
+          it("sign transaction and send via sendAsync", async () => {
+            const balanceBefore = BigNumber.from(await web3.eth.getBalance(walletAddress));
+            const { rawTransaction } = await web3.eth.accounts.signTransaction(
+              TEST_SIGN_TRANSACTION,
+              walletClient.signer.privateKey,
+            );
+            const callback = async (_error: any, result: any) => {
+              expect(!!result).to.be.true;
+              const balanceAfter = BigNumber.from(await web3.eth.getBalance(walletAddress));
+              expect(balanceAfter.lt(balanceBefore)).to.be.true;
+            };
+            provider.sendAsync(
+              {
+                method: "eth_sendRawTransaction",
+                params: [rawTransaction],
+              },
+              callback,
+            );
+          });*/
     });
 /*    describe("Ethers", () => {
       let web3Provider: providers.Web3Provider;

@@ -167,6 +167,7 @@ export class UniversalProvider implements IUniversalProvider {
         requiredNamespaces: this.namespaces,
         optionalNamespaces: this.optionalNamespaces,
         sessionProperties: this.sessionProperties,
+        nymClientPort: this.nymClientPort,
       });
 
       if (uri) {
