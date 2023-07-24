@@ -32,6 +32,8 @@
     "test:ignoreUnhandled": "npm run test:pre; npm run test:integration -- --dangerouslyIgnoreUnhandledErrors --segfault-retry=3",
     "test:canary": "vitest run --dir test/canary",
     "test:lifecycle": "vitest run --dir test/lifecycle -- --dangerouslyIgnoreUnhandledErrors --segfault-retry=3",
+    "singletest:pre": "rm -rf ./single-test/tmp && mkdir ./single-test/tmp",
+    "singletest": "npm run singletest:pre; npm run test:pre; vitest run --dir single-test",
     "canary": "npm run test:pre; npm run test:canary",
     "loadtest": "npm run test:pre; npm run test:concurrency",
     "lint": "eslint -c '../../.eslintrc' --fix './src/**/*.ts'",
