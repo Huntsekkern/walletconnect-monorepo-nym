@@ -6,7 +6,8 @@ Open protocol for connecting Wallets to Dapps - https://walletconnect.com
 
 1. Ensure [nodejs and npm](https://nodejs.org/en/)
 2. Clone the repository
-3. Install all package dependencies, by running `npm install` from the root folder
+3. Install all package dependencies, by running `npm install` from the root folder. If the nym packages are not published yet, the local links must be removed during this phase, and then, add them back, then run the 4th point. (messy set-up necessary by npm...)
+4. If the nym packages are not published yet: `npm link nym-ws-connection nym-http-connection` (both at the same time!)
 
 ## Running checks for all packages
 
