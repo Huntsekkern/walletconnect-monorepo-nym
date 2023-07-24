@@ -1,6 +1,6 @@
 import Client from "@walletconnect/sign-client";
 import { JsonRpcProvider } from "@walletconnect/jsonrpc-provider";
-import { NymWsConnection } from "nym-ws-connection";
+import { NymHttpConnection } from "nym-http-connection";
 import { EngineTypes, SessionTypes } from "@walletconnect/types";
 
 import {
@@ -96,7 +96,7 @@ class Eip155Provider implements IProvider {
     const rpc =
       rpcUrl || getRpcUrl(`${this.name}:${chainId}`, this.namespace, this.client.core.projectId);
     if (typeof rpc === "undefined") return undefined;
-    const http = new JsonRpcProvider(new NymWsConnection(rpc, getGlobal("disableProviderPing")));
+    const http = new JsonRpcProvider(new NymHttpConnection(rpc, getGlobal("disableProviderPing")));
     return http;
   }
 
