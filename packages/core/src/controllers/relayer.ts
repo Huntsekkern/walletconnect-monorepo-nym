@@ -124,7 +124,6 @@ export class Relayer extends IRelayer {
   }
 
   public async publish(topic: string, message: string, opts?: RelayerTypes.PublishOptions) {
-    console.log("Relayer is PUBLISHING : " + topic + " message: " + message);
     this.isInitialized();
     await this.publisher.publish(topic, message, opts);
     await this.recordMessageEvent({

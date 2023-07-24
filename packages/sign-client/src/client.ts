@@ -92,7 +92,6 @@ export class SignClient extends ISignClient {
     try {
       console.log("SIGNCLIENT CONNECT");
       console.log(params.nymClientPort);
-      console.log(this.engine);
       return await this.engine.connect(params);
     } catch (error: any) {
       console.log("SIGNCLIENT CONNECT ERROR");
