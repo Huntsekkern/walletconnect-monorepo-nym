@@ -23,6 +23,7 @@ class PolkadotProvider implements IProvider {
   public chainId: string;
 
   constructor(opts: SubProviderOpts) {
+    console.log("POLKADOT BEING CREATED");
     this.namespace = opts.namespace;
     this.events = getGlobal("events");
     this.client = getGlobal("client");

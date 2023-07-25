@@ -22,6 +22,7 @@ class CardanoProvider implements IProvider {
   public chainId: string;
 
   constructor(opts: SubProviderOpts) {
+    console.log("CARDANO BEING CREATED");
     this.namespace = opts.namespace;
     this.events = getGlobal("events");
     this.client = getGlobal("client");
