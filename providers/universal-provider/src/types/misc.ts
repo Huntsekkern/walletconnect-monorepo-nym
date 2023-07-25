@@ -60,6 +60,7 @@ export interface ConnectParams {
 
 export interface SubProviderOpts {
   namespace: Namespace;
+  sharedMixnetWebsocketConnection?: WebSocket;
 }
 
 export interface RequestParams {

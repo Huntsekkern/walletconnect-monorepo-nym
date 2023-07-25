@@ -22,9 +22,13 @@ class ElrondProvider implements IProvider {
   public namespace: SessionNamespace;
   public chainId: string;
 
+  private sharedMixnetWebsocketConnection: WebSocket | any;
+
+
   constructor(opts: SubProviderOpts) {
     console.log("ELROND BEING CREATED");
     this.namespace = opts.namespace;
+    this.sharedMixnetWebsocketConnection = opts.sharedMixnetWebsocketConnection;
     this.events = getGlobal("events");
     this.client = getGlobal("client");
     this.chainId = this.getDefaultChain();
@@ -119,7 +123,7 @@ class ElrondProvider implements IProvider {
   ): JsonRpcProvider | undefined {
     const rpc = rpcUrl || getRpcUrl(chainId, this.namespace, this.client.core.projectId);
     if (typeof rpc === "undefined") return undefined;
-    const http = new JsonRpcProvider(new NymHttpConnection(rpc, getGlobal("disableProviderPing")));
+    const http = new JsonRpcProvider(new NymHttpConnection(rpc, getGlobal("disableProviderPing"), this.sharedMixnetWebsocketConnection));
     return http;
   }
 }

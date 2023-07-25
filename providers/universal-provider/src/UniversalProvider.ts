@@ -46,6 +46,8 @@ export class UniversalProvider implements IUniversalProvider {
   public uri: string | undefined;
   public nymClientPort?: string;
 
+  private sharedMixnetWebsocketConnection: WebSocket | any;
+
   private shouldAbortPairingAttempt = false;
   private maxPairingAttempts = 10;
   private disableProviderPing = false;
@@ -253,13 +255,57 @@ export class UniversalProvider implements IUniversalProvider {
 
   private async initialize() {
     this.logger.trace(`Initialized`);
+    await this.connectToMixnet();
     await this.createClient();
     await this.checkStorage();
     this.registerEventListeners();
   }
 
+
+  private async connectToMixnet(): Promise<WebSocket> {
+    const port = "1990"
+    const localClientUrl = "ws://127.0.0.1:" + port;
+
+    // Set up and handle websocket connection to our desktop client.
+    this.sharedMixnetWebsocketConnection = await this.connectWebsocket(localClientUrl).then(function (c) {
+      return c;
+    }).catch((err) => {
+      console.log("Websocket connection error on the user. Is the client running with <pre>--connection-type WebSocket</pre> on port " + port + "?");
+      console.log(err);
+      return new Promise((resolve, reject) => {
+        reject(err.error);
+      });
+    });
+
+    if (!this.sharedMixnetWebsocketConnection) {
+      const err = new Error("Oh no! Could not create client");
+      console.error(err);
+      return new Promise((resolve, reject) => {
+        reject(err);
+      });
+    }
+
+    return new Promise((resolve) => {
+      resolve(this.sharedMixnetWebsocketConnection);
+    });
+  }
+
+  // Function that connects our application to the mixnet Websocket. We want to call this when registering.
+  private connectWebsocket(url: string): Promise<void> {
+    return new Promise(function (resolve, reject) {
+      const server = new WebSocket(url);
+      console.log("user connecting to Mixnet Websocket (Nym Client)...");
+      server.onopen = function () {
+        resolve(server);
+      };
+      server.onerror = function (err) {
+        reject(err);
+      };
+
+    });
+  }
+
   private async createClient() {
-    console.log("BEFORE UP CREATECLIENT");
     this.client =
       this.providerOpts.client ||
       (await SignClient.init({
@@ -311,36 +357,43 @@ export class UniversalProvider implements IUniversalProvider {
         case "eip155":
           this.rpcProviders[namespace] = new Eip155Provider({
             namespace: combinedNamespace,
+            sharedMixnetWebsocketConnection: this.sharedMixnetWebsocketConnection,
           });
           break;
         case "solana":
           this.rpcProviders[namespace] = new SolanaProvider({
             namespace: combinedNamespace,
+            sharedMixnetWebsocketConnection: this.sharedMixnetWebsocketConnection,
           });
           break;
         case "cosmos":
           this.rpcProviders[namespace] = new CosmosProvider({
             namespace: combinedNamespace,
+            sharedMixnetWebsocketConnection: this.sharedMixnetWebsocketConnection,
           });
           break;
         case "polkadot":
           this.rpcProviders[namespace] = new PolkadotProvider({
             namespace: combinedNamespace,
+            sharedMixnetWebsocketConnection: this.sharedMixnetWebsocketConnection,
           });
           break;
         case "cip34":
           this.rpcProviders[namespace] = new CardanoProvider({
             namespace: combinedNamespace,
+            sharedMixnetWebsocketConnection: this.sharedMixnetWebsocketConnection,
           });
           break;
         case "elrond":
           this.rpcProviders[namespace] = new ElrondProvider({
             namespace: combinedNamespace,
+            sharedMixnetWebsocketConnection: this.sharedMixnetWebsocketConnection,
           });
           break;
         case "multiversx":
           this.rpcProviders[namespace] = new MultiversXProvider({
             namespace: combinedNamespace,
+            sharedMixnetWebsocketConnection: this.sharedMixnetWebsocketConnection,
           });
           break;
       }

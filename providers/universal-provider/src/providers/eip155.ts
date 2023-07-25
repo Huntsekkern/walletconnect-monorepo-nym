@@ -24,9 +24,13 @@ class Eip155Provider implements IProvider {
   public httpProviders: RpcProvidersMap;
   public events: EventEmitter;
 
+  private sharedMixnetWebsocketConnection: WebSocket | any;
+
+
   constructor(opts: SubProviderOpts) {
     console.log("EIP BEING CREATED");
     this.namespace = opts.namespace;
+    this.sharedMixnetWebsocketConnection = opts.sharedMixnetWebsocketConnection;
     this.events = getGlobal("events");
     this.client = getGlobal("client");
     this.httpProviders = this.createHttpProviders();
@@ -96,7 +100,7 @@ class Eip155Provider implements IProvider {
     const rpc =
       rpcUrl || getRpcUrl(`${this.name}:${chainId}`, this.namespace, this.client.core.projectId);
     if (typeof rpc === "undefined") return undefined;
-    const http = new JsonRpcProvider(new NymHttpConnection(rpc, getGlobal("disableProviderPing")));
+    const http = new JsonRpcProvider(new NymHttpConnection(rpc, getGlobal("disableProviderPing"), this.sharedMixnetWebsocketConnection));
     return http;
   }
 
