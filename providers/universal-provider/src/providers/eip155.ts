@@ -101,6 +101,7 @@ class Eip155Provider implements IProvider {
   }
 
   private setHttpProvider(chainId: number, rpcUrl?: string): void {
+    console.log("EIP setHttp calls createHttp");
     const http = this.createHttpProvider(chainId, rpcUrl);
     if (http) {
       this.httpProviders[chainId] = http;
@@ -111,6 +112,7 @@ class Eip155Provider implements IProvider {
     const http = {};
     this.namespace.chains.forEach((chain) => {
       const parsedChain = getChainId(chain);
+      console.log("EIP createhttp's is looping and call createhttp");
       http[parsedChain] = this.createHttpProvider(parsedChain, this.namespace.rpcMap?.[chain]);
     });
     return http;
