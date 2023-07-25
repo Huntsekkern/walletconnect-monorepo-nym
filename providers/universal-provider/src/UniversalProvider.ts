@@ -122,7 +122,6 @@ export class UniversalProvider implements IUniversalProvider {
   }
 
   public async connect(opts: ConnectParams): Promise<SessionTypes.Struct | undefined> {
-    console.log("UNIVERSALPROVIDER CONNECT");
     if (!this.client) {
       throw new Error("Sign Client not initialized");
     }
@@ -156,13 +155,10 @@ export class UniversalProvider implements IUniversalProvider {
   }
 
   public async pair(pairingTopic: string | undefined): Promise<SessionTypes.Struct> {
-    console.log("UNIVERSALPROVIDER PAIRING");
-
-    this.shouldAbortPairingAttempt = false;
+     this.shouldAbortPairingAttempt = false;
     let pairingAttempts = 0;
     do {
-      console.log("UNIVERSALPROVIDER IN LOOP");
-      console.log("pairingAttemps = " + pairingAttempts);
+      console.log("UNIVERSALPROVIDER pairingAttemps = " + pairingAttempts);
 
       if (this.shouldAbortPairingAttempt) {
         throw new Error("Pairing aborted");
@@ -189,13 +185,8 @@ export class UniversalProvider implements IUniversalProvider {
         this.events.emit("display_uri", uri);
       }
 
-      console.log("UNIVERSALPROVIDER APPROVAL");
-      console.log(approval);
-
       await approval()
         .then((session) => {
-          console.log("IN THEN CLAUSE");
-          console.log(session);
           this.session = session;
           // assign namespaces from session if not already defined
           if (!this.namespaces) {
@@ -204,16 +195,12 @@ export class UniversalProvider implements IUniversalProvider {
           }
         })
         .catch((error) => {
-          console.log("approval has error");
-          console.log(error);
           if (error.message !== PROPOSAL_EXPIRY_MESSAGE) {
             throw error;
           }
           pairingAttempts++;
         });
-      console.log("LOOPING AGAIN");
     } while (!this.session);
-    console.log("UNIVERSALPROVIDER ONCONNECT");
 
     this.onConnect();
     return this.session;

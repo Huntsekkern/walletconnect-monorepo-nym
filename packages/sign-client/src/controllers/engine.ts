@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { EXPIRER_EVENTS, RELAYER_DEFAULT_PROTOCOL, RELAYER_EVENTS } from "@walletconnect/core";
 
 import {
@@ -80,7 +79,6 @@ export class Engine extends IEngine {
   private ignoredPayloadTypes = [TYPE_1];
 
   constructor(client: IEngine["client"]) {
-    console.log("NEW ENGINE");
     super(client);
   }
 
@@ -134,13 +132,11 @@ export class Engine extends IEngine {
       },
       ...(sessionProperties && { sessionProperties }),
     };
-    console.log("SIGNCLIENT ENGINE CONNECT after checks");
     const {
       reject,
       resolve,
       done: approval,
     } = createDelayedPromise<SessionTypes.Struct>(FIVE_MINUTES, PROPOSAL_EXPIRY_MESSAGE);
-    console.log("SIGNCLIENT ENGINE CONNECT after create delayed promise");
 
     this.events.once<"session_connect">(
       engineEvent("session_connect"),
@@ -176,8 +172,6 @@ export class Engine extends IEngine {
 
     const expiry = calcExpiry(FIVE_MINUTES);
     await this.setProposal(id, { id, expiry, ...proposal });
-    console.log("SIGNCLIENT ENGINE CONNECT returned");
-    console.log(uri + " : " + approval);
 
     return { uri, approval };
   };
@@ -685,7 +679,6 @@ export class Engine extends IEngine {
       });
       await this.client.core.pairing.activate({ topic });
     } else if (isJsonRpcError(payload)) {
-      console.log("RECEIVED AN ERROR TO SESSION_CONNECT");
       await this.client.proposal.delete(id, getSdkError("USER_DISCONNECTED"));
       this.events.emit(engineEvent("session_connect"), { error: payload.error });
     }
@@ -696,7 +689,6 @@ export class Engine extends IEngine {
     payload,
   ) => {
     const { id, params } = payload;
-    console.log("SESSION_CONNECT MIGHT BE SUCCESSFUL");
     try {
       this.isValidSessionSettleRequest(params);
       const {
