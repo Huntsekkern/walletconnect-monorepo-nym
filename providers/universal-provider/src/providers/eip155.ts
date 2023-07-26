@@ -116,7 +116,7 @@ class Eip155Provider implements IProvider {
     const http = {};
     this.namespace.chains.forEach((chain) => {
       const parsedChain = getChainId(chain);
-      console.log("EIP createhttp's is looping and call createhttp");
+      console.log("EIP createhttp's is looping and call createhttp for " + parsedChain + " ::: " + chain);
       http[parsedChain] = this.createHttpProvider(parsedChain, this.namespace.rpcMap?.[chain]);
     });
     return http;

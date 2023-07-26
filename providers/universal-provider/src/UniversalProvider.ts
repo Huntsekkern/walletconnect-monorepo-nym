@@ -33,6 +33,8 @@ import {
 import { RELAY_URL, LOGGER, STORAGE, PROVIDER_EVENTS } from "./constants";
 import EventEmitter from "events";
 
+import WebSocket, { MessageEvent } from "ws";
+
 export class UniversalProvider implements IUniversalProvider {
   public client!: SignClient;
   public namespaces?: NamespaceConfig;
@@ -261,9 +263,8 @@ export class UniversalProvider implements IUniversalProvider {
     this.registerEventListeners();
   }
 
-
   private async connectToMixnet(): Promise<WebSocket> {
-    const port = "1990"
+    const port = "1990";
     const localClientUrl = "ws://127.0.0.1:" + port;
 
     // Set up and handle websocket connection to our desktop client.
@@ -301,7 +302,6 @@ export class UniversalProvider implements IUniversalProvider {
       server.onerror = function (err) {
         reject(err);
       };
-
     });
   }
 
