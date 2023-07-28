@@ -223,6 +223,7 @@ export type EthereumProviderOptions = {
   relayUrl?: string;
   storageOptions?: KeyValueStorageOptions;
   nymClientPort?: string;
+  nymClientPortForHTTP?: string;
 } & ChainsProps;
 
 export class EthereumProvider implements IEthereumProvider {
@@ -233,6 +234,7 @@ export class EthereumProvider implements IEthereumProvider {
   public chainId = 1;
   public modal?: WalletConnectModal;
   public nymClientPort?: string;
+  public nymClientPortForHTTP?: string;
 
   protected rpc: EthereumRpcConfig;
   protected readonly STORAGE_KEY = STORAGE_KEY;
@@ -512,6 +514,7 @@ export class EthereumProvider implements IEthereumProvider {
       ? getEthereumChainId(this.rpc.chains)
       : getEthereumChainId(this.rpc.optionalChains);
     this.nymClientPort = opts?.nymClientPort;
+    this.nymClientPortForHTTP = opts?.nymClientPortForHTTP;
     this.signer = await UniversalProvider.init({
       projectId: this.rpc.projectId,
       metadata: this.rpc.metadata,
@@ -519,6 +522,7 @@ export class EthereumProvider implements IEthereumProvider {
       relayUrl: opts.relayUrl,
       storageOptions: opts.storageOptions,
       nymClientPort: this.nymClientPort,
+      nymClientPortForHTTP: this.nymClientPortForHTTP,
     });
     this.registerEventListeners();
     await this.loadPersistedSession();

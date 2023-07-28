@@ -324,20 +324,35 @@ describe("EthereumProvider", function () {
   });
 //   Those tests don't pass because they try to init more providers, which obviously lead to port clashes...
   // Whether it's a serious real case and worth to fix it... is to be determined.
+  // Let's not do that. I allowed to bubble down the http port. It "works" (probably), but then each new provider also need two new clients for its two WS.
+  // So to test this, I'd need to run 10+ nym clients. Or multiplex everything at the test level (which is not a valid real case solution)
+  // So let's just assume it works because I didn't change what the relay sends/store/receive. And the relay is what has persistence.
 /*  describe("persistence", () => {
     const db = "./test/tmp/test.db";
-    const initOptions: EthereumProviderOptions = {
+    const initOptions1: EthereumProviderOptions = {
       projectId: process.env.TEST_PROJECT_ID || "",
       chains: [CHAIN_ID],
       showQrModal: false,
       storageOptions: {
         database: db,
       },
+      nymClientPortForHTTP: "1991",
+    };
+    const initOptions2: EthereumProviderOptions = {
+      projectId: process.env.TEST_PROJECT_ID || "",
+      chains: [CHAIN_ID],
+      showQrModal: false,
+      storageOptions: {
+        database: db,
+      },
+      nymClientPortForHTTP: "1992",
     };
     it("should restore session with `eip155: { chains: [...] }` structure", async () => {
-      const provider = await EthereumProvider.init(initOptions);
+      console.log("BEFORE 1st ETH init");
+      const provider = await EthereumProvider.init(initOptions1);
+      console.log("AFTER 1st ETH init");
       const walletClient = await SignClient.init({
-        projectId: initOptions.projectId,
+        projectId: initOptions1.projectId,
       });
       await Promise.all([
         new Promise<void>((resolve) => {
@@ -371,7 +386,7 @@ describe("EthereumProvider", function () {
       await walletClient.core.relayer.transportClose();
 
       // reload the provider with the persisted session
-      const persistedProvider = await EthereumProvider.init(initOptions);
+      const persistedProvider = await EthereumProvider.init(initOptions2);
       const persistedAccounts = (await persistedProvider.request({
         method: "eth_accounts",
       })) as string[];
@@ -383,9 +398,9 @@ describe("EthereumProvider", function () {
       await persistedProvider.signer.client.core.relayer.transportClose();
     });
     it("should restore session with `['eip155:1']: {...}` structure", async () => {
-      const provider = await EthereumProvider.init(initOptions);
+      const provider = await EthereumProvider.init(initOptions1);
       const walletClient = await SignClient.init({
-        projectId: initOptions.projectId,
+        projectId: initOptions1.projectId,
       });
       await Promise.all([
         new Promise<void>((resolve) => {
@@ -419,7 +434,7 @@ describe("EthereumProvider", function () {
       await walletClient.core.relayer.transportClose();
 
       // reload the provider with the persisted session
-      const persistedProvider = await EthereumProvider.init(initOptions);
+      const persistedProvider = await EthereumProvider.init(initOptions2);
       const persistedAccounts = (await persistedProvider.request({
         method: "eth_accounts",
       })) as string[];
@@ -437,6 +452,7 @@ describe("EthereumProvider", function () {
         projectId: process.env.TEST_PROJECT_ID || "",
         optionalChains: [CHAIN_ID, 137],
         showQrModal: false,
+        nymClientPortForHTTP: "1991",
       };
       const provider = await EthereumProvider.init(initOptions);
       const walletClient = await SignClient.init({
@@ -490,6 +506,7 @@ describe("EthereumProvider", function () {
         projectId: process.env.TEST_PROJECT_ID || "",
         chains: [CHAIN_ID],
         showQrModal: false,
+        nymClientPortForHTTP: "1991",
       };
       const provider = await EthereumProvider.init(initOptions);
       const walletClient = await SignClient.init({
@@ -534,6 +551,7 @@ describe("EthereumProvider", function () {
             chains: [],
             optionalChains: [],
             showQrModal: false,
+            nymClientPortForHTTP: "1991",
           }),
       ).rejects.toThrowError("No chains specified in either `chains` or `optionalChains`");
     });

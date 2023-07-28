@@ -16,6 +16,7 @@ export interface UniversalProviderOpts {
   name?: string;
   disableProviderPing?: boolean;
   nymClientPort?: string;
+  nymClientPortForHTTP?: string;
 }
 
 export type Metadata = SignClientTypes.Metadata;

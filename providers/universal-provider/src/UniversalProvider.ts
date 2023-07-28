@@ -47,6 +47,7 @@ export class UniversalProvider implements IUniversalProvider {
   public logger: Logger;
   public uri: string | undefined;
   public nymClientPort?: string;
+  public nymClientPortForHTTP?: string;
 
   private sharedMixnetWebsocketConnection: WebSocket | any;
 
@@ -68,6 +69,7 @@ export class UniversalProvider implements IUniversalProvider {
         : pino(getDefaultLoggerOptions({ level: opts?.logger || LOGGER }));
     this.disableProviderPing = opts?.disableProviderPing || false;
     this.nymClientPort = opts?.nymClientPort || "1977";
+    this.nymClientPortForHTTP = opts?.nymClientPortForHTTP || "1990";
   }
 
   public async request<T = unknown>(
@@ -264,14 +266,14 @@ export class UniversalProvider implements IUniversalProvider {
   }
 
   private async connectToMixnet(): Promise<WebSocket> {
-    const port = "1990";
+    const port = this.nymClientPortForHTTP;
     const localClientUrl = "ws://127.0.0.1:" + port;
 
     // Set up and handle websocket connection to our desktop client.
     this.sharedMixnetWebsocketConnection = await this.connectWebsocket(localClientUrl).then(function (c) {
       return c;
     }).catch((err) => {
-      console.log("Websocket connection error on the user. Is the client running with <pre>--connection-type WebSocket</pre> on port " + port + "?");
+      console.log("Websocket connection error on the universalProvider. Is the client running with <pre>--connection-type WebSocket</pre> on port " + port + "?");
       console.log(err);
       return new Promise((resolve, reject) => {
         reject(err.error);
@@ -295,7 +297,7 @@ export class UniversalProvider implements IUniversalProvider {
   private connectWebsocket(url: string): Promise<void> {
     return new Promise(function (resolve, reject) {
       const server = new WebSocket(url);
-      console.log("user connecting to Mixnet Websocket (Nym Client)...");
+      console.log("universalProvider connecting to Mixnet Websocket (Nym Client)...");
       server.onopen = function () {
         resolve(server);
       };
@@ -531,6 +533,7 @@ export class UniversalProvider implements IUniversalProvider {
     this.namespaces = undefined;
     this.optionalNamespaces = undefined;
     this.sessionProperties = undefined;
+    this.sharedMixnetWebsocketConnection.close();
     this.persist("namespaces", undefined);
     this.persist("optionalNamespaces", undefined);
     this.persist("sessionProperties", undefined);
