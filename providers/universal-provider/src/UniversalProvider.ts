@@ -280,21 +280,19 @@ export class UniversalProvider implements IUniversalProvider {
       });
     });
 
-    if (!this.sharedMixnetWebsocketConnection) {
-      const err = new Error("Oh no! Could not create client");
-      console.error(err);
-      return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      if (!this.sharedMixnetWebsocketConnection) {
+        const err = new Error("Oh no! Could not create client");
+        console.error(err);
         reject(err);
-      });
-    }
-
-    return new Promise((resolve) => {
-      resolve(this.sharedMixnetWebsocketConnection);
+      } else {
+        resolve(this.sharedMixnetWebsocketConnection);
+      }
     });
   }
 
   // Function that connects our application to the mixnet Websocket. We want to call this when registering.
-  private connectWebsocket(url: string): Promise<void> {
+  private connectWebsocket(url: string): Promise<WebSocket> {
     return new Promise(function (resolve, reject) {
       const server = new WebSocket(url);
       console.log("universalProvider connecting to Mixnet Websocket (Nym Client)...");
