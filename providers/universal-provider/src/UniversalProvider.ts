@@ -299,7 +299,7 @@ export class UniversalProvider implements IUniversalProvider {
       server.onopen = function () {
         resolve(server);
       };
-      server.onerror = function (err: Event) {
+      server.onerror = function (err: any) {
         reject(err);
       };
     });
