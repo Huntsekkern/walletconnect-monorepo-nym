@@ -33,7 +33,7 @@ import {
 import { RELAY_URL, LOGGER, STORAGE, PROVIDER_EVENTS } from "./constants";
 import EventEmitter from "events";
 
-import WebSocket, { MessageEvent } from "ws";
+import WebSocket from "ws";
 
 export class UniversalProvider implements IUniversalProvider {
   public client!: SignClient;
@@ -275,7 +275,7 @@ export class UniversalProvider implements IUniversalProvider {
     }).catch((err) => {
       console.log("Websocket connection error on the universalProvider. Is the client running with <pre>--connection-type WebSocket</pre> on port " + port + "?");
       console.log(err);
-      return new Promise((resolve, reject) => {
+      return new Promise((_, reject) => {
         reject(err.error);
       });
     });
@@ -299,7 +299,7 @@ export class UniversalProvider implements IUniversalProvider {
       server.onopen = function () {
         resolve(server);
       };
-      server.onerror = function (err) {
+      server.onerror = function (err: Event) {
         reject(err);
       };
     });
